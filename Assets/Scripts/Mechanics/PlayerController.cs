@@ -19,6 +19,7 @@ namespace Platformer.Mechanics
         public AudioClip ouchAudio;
         [SerializeField] Transform _transform;
         int degree;
+        [SerializeField] GameObject donut;
 
         /// <summary>
         /// Max horizontal speed of the player.
@@ -53,12 +54,13 @@ namespace Platformer.Mechanics
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
         }
-
+        
         public bool HasPowerUp()
         {
             if (hasPowerUp)
             {
                 hasPowerUp = false;
+                donut.SetActive(false);
                 return true;
             }
             else 
@@ -67,15 +69,19 @@ namespace Platformer.Mechanics
             }
         }
 
-
+        public void GetPowerUp()
+        {
+            hasPowerUp = true;
+            donut.SetActive(true);
+        }
 
         protected override void Update()
         {
             if (hasPowerUp)
             {
                 animator.enabled = false;
-                _transform.rotation = Quaternion.Euler(Vector3.forward * degree / 3);
-                if (degree >= 360 * 3)
+                _transform.rotation = Quaternion.Euler(Vector3.forward * degree / 2);
+                if (degree >= 360 * 2)
                 {
                     degree = 0;
                 }
