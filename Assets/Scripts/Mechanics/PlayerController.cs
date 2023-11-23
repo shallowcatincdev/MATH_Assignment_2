@@ -17,6 +17,8 @@ namespace Platformer.Mechanics
         public AudioClip jumpAudio;
         public AudioClip respawnAudio;
         public AudioClip ouchAudio;
+        [SerializeField] Transform _transform;
+        int degree;
 
         /// <summary>
         /// Max horizontal speed of the player.
@@ -35,6 +37,7 @@ namespace Platformer.Mechanics
         public bool controlEnabled = true;
 
         bool jump;
+        public bool hasPowerUp;
         Vector2 move;
         SpriteRenderer spriteRenderer;
         internal Animator animator;
@@ -51,8 +54,42 @@ namespace Platformer.Mechanics
             animator = GetComponent<Animator>();
         }
 
+        public bool HasPowerUp()
+        {
+            if (hasPowerUp)
+            {
+                hasPowerUp = false;
+                return true;
+            }
+            else 
+            { 
+                return false; 
+            }
+        }
+
+
+
         protected override void Update()
         {
+            if (hasPowerUp)
+            {
+                animator.enabled = false;
+                _transform.rotation = Quaternion.Euler(Vector3.forward * degree / 3);
+                if (degree >= 360 * 3)
+                {
+                    degree = 0;
+                }
+                else
+                {
+                    degree++;
+                }
+            }
+            else
+            {
+                animator.enabled = true;
+                degree = 0;
+                _transform.rotation = Quaternion.Euler(Vector3.forward * degree);
+            }
             if (controlEnabled)
             {
                 move.x = Input.GetAxis("Horizontal");
@@ -70,6 +107,7 @@ namespace Platformer.Mechanics
             }
             UpdateJumpState();
             base.Update();
+
         }
 
         void UpdateJumpState()
